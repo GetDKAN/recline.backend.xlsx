@@ -22,8 +22,9 @@ var Excel = {};
       for(var i = 0; i !== data.length; ++i) arr[i] = String.fromCharCode(data[i]);
       var bstr = arr.join("");
       var workbook = XLSX.read(bstr, {type: "binary"});
-      out.fields = my.extractFields(workbook.Sheets[dataset.sheet]);
-      out.records = my.extractData(workbook.Sheets[dataset.sheet], out.fields);
+      var sheet = dataset.sheet || _.first(_.keys(workbook.Sheets));
+      out.fields = my.extractFields(workbook.Sheets[sheet]);
+      out.records = my.extractData(workbook.Sheets[sheet], out.fields);
       dfd.resolve(out);
     };
     oReq.send();
@@ -31,6 +32,7 @@ var Excel = {};
   };
 
   my.extractFields = function(sheet){
+    console.log(sheet);
     var headers = [];
     var range = XLSX.utils.decode_range(sheet["!ref"]);
     var C, R = range.s.r;

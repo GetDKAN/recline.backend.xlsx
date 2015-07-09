@@ -5,8 +5,7 @@
 
     var backend = {
       backend: "xlsx",
-      url: "data/example.xlsx",
-      sheet: "apollo-parsed-1737-325_0"
+      url: "data/testxls1.xlsx",
     };
 
     Excel.fetch(backend).done(function(data){
