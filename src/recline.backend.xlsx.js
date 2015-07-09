@@ -4,7 +4,7 @@ var Excel = {};
 // Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
 (function(my) {
   "use strict";
-  my.__type__ = "xlsx";
+  my.__type__ = "Excel";
 
   // use either jQuery or Underscore Deferred depending on what is available
   var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
@@ -24,6 +24,7 @@ var Excel = {};
       var workbook = XLSX.read(bstr, {type: "binary"});
       var sheet = dataset.sheet || _.first(_.keys(workbook.Sheets));
       out.fields = my.extractFields(workbook.Sheets[sheet]);
+      out.useMemoryStore = true;
       out.records = my.extractData(workbook.Sheets[sheet], out.fields);
       dfd.resolve(out);
     };
@@ -32,7 +33,6 @@ var Excel = {};
   };
 
   my.extractFields = function(sheet){
-    console.log(sheet);
     var headers = [];
     var range = XLSX.utils.decode_range(sheet["!ref"]);
     var C, R = range.s.r;

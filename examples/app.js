@@ -4,12 +4,14 @@
   $(document).on("ready", function(){
 
     var backend = {
-      backend: "xlsx",
+      backend: "Excel",
       url: "data/testxls1.xlsx",
     };
+    var dataset = new recline.Model.Dataset(backend);
 
-    Excel.fetch(backend).done(function(data){
+    dataset.fetch().done(function(data){
       console.log(data);
     });
+
   });
 })(jQuery);
