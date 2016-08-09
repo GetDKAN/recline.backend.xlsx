@@ -26,7 +26,7 @@
       var arr = [];
       for(var i = 0; i !== data.length; ++i) arr[i] = String.fromCharCode(data[i]);
       var bstr = arr.join("");
-      var workbook = XLS.read(bstr, {type: "binary"});
+      var workbook = XLSX.read(bstr, {type: "binary"});
       var sheet = dataset.sheet || _.first(_.keys(workbook.Sheets));
       out.fields = my.extractFields(workbook.Sheets[sheet]);
       out.useMemoryStore = true;
@@ -39,13 +39,13 @@
 
   my.extractFields = function(sheet){
     var headers = [];
-    var range = XLS.utils.decode_range(sheet["!ref"]);
+    var range = XLSX.utils.decode_range(sheet["!ref"]);
     var C, R = range.s.r;
 
     for(C = range.s.c; C <= range.e.c; ++C) {
-        var cell = sheet[XLS.utils.encode_cell({c:C, r:R})];
+        var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
         var hdr = "UNKNOWN " + C;
-        if(cell && cell.t) hdr = XLS.utils.format_cell(cell);
+        if(cell && cell.t) hdr = XLSX.utils.format_cell(cell);
         headers.push(hdr);
     }
     return headers;
@@ -53,15 +53,15 @@
 
   my.extractData = function(sheet, headers) {
     var result = [];
-    var range = XLS.utils.decode_range(sheet["!ref"]);
+    var range = XLSX.utils.decode_range(sheet["!ref"]);
     var row = {};
     var C, R, value;
 
     for(R = range.s.r + 1; R <= range.e.r; ++R) {
       row = {};
       for(C = range.s.c; C <= range.e.c; ++C) {
-        var cell = sheet[XLS.utils.encode_cell({c:C, r:R})];
-        if(cell && cell.t) value = XLS.utils.format_cell(cell);
+        var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
+        if(cell && cell.t) value = XLSX.utils.format_cell(cell);
         row[headers[C]] = value;
       }
       result.push(row);

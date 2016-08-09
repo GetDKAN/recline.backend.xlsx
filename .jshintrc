@@ -68,8 +68,7 @@
     "$": false,
     "jQuery": false,
     "_": false,
-    "XLS": false,
-    "Excel": false,
+    "XLSX": false,
     "recline": false
   },
   // Suppress warnings about == null comparisons.
