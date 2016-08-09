@@ -68,7 +68,7 @@
     "$": false,
     "jQuery": false,
     "_": false,
-    "XLSX": false,
+    "XLS": false,
     "Excel": false,
     "recline": false
   },

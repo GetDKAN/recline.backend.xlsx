@@ -1,10 +1,15 @@
 /*jshint -W079 */
-var Excel = {};
 
 // Note that provision of jQuery is optional (it is **only** needed if you use fetch on a remote file)
-(function(my) {
+(function(recline) {
   "use strict";
-  my.__type__ = "Excel";
+  
+  recline = recline || {};
+  recline.Backend = recline.Backend || {};
+  recline.Backend.XLS = {};  
+  var my = recline.Backend.XLS;
+
+  my.__type__ = "xls";
 
   // use either jQuery or Underscore Deferred depending on what is available
   var Deferred = (typeof jQuery !== "undefined" && jQuery.Deferred) || _.Deferred;
@@ -21,7 +26,7 @@ var Excel = {};
       var arr = [];
       for(var i = 0; i !== data.length; ++i) arr[i] = String.fromCharCode(data[i]);
       var bstr = arr.join("");
-      var workbook = XLSX.read(bstr, {type: "binary"});
+      var workbook = XLS.read(bstr, {type: "binary"});
       var sheet = dataset.sheet || _.first(_.keys(workbook.Sheets));
       out.fields = my.extractFields(workbook.Sheets[sheet]);
       out.useMemoryStore = true;
@@ -34,13 +39,13 @@ var Excel = {};
 
   my.extractFields = function(sheet){
     var headers = [];
-    var range = XLSX.utils.decode_range(sheet["!ref"]);
+    var range = XLS.utils.decode_range(sheet["!ref"]);
     var C, R = range.s.r;
 
     for(C = range.s.c; C <= range.e.c; ++C) {
-        var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
+        var cell = sheet[XLS.utils.encode_cell({c:C, r:R})];
         var hdr = "UNKNOWN " + C;
-        if(cell && cell.t) hdr = XLSX.utils.format_cell(cell);
+        if(cell && cell.t) hdr = XLS.utils.format_cell(cell);
         headers.push(hdr);
     }
     return headers;
@@ -48,26 +53,19 @@ var Excel = {};
 
   my.extractData = function(sheet, headers) {
     var result = [];
-    var range = XLSX.utils.decode_range(sheet["!ref"]);
+    var range = XLS.utils.decode_range(sheet["!ref"]);
     var row = {};
     var C, R, value;
 
     for(R = range.s.r + 1; R <= range.e.r; ++R) {
       row = {};
       for(C = range.s.c; C <= range.e.c; ++C) {
-        var cell = sheet[XLSX.utils.encode_cell({c:C, r:R})];
-        if(cell && cell.t) value = XLSX.utils.format_cell(cell);
+        var cell = sheet[XLS.utils.encode_cell({c:C, r:R})];
+        if(cell && cell.t) value = XLS.utils.format_cell(cell);
         row[headers[C]] = value;
       }
       result.push(row);
     }
     return result;
   };
-}(Excel));
-
-
-// backwards compatability for use in Recline
-var recline = recline || {};
-recline.Backend = recline.Backend || {};
-recline.Backend.Excel = Excel;
-
+}(recline));
